@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TaskFlowApi.Entities;
 
-[Index()]
+[Index(nameof(Email), IsUnique = true)]
 public class User
 {
     public int id { get; set; }
