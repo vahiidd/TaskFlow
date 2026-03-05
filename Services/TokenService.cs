@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using TaskFlowApi.Entities;
 
-namespace TaskFlow.Api.Services;
+namespace TaskFlowApi.Services;
 
 public class TokenService : ITokenService
 {
