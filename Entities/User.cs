@@ -6,7 +6,7 @@ namespace TaskFlowApi.Entities;
 [Index(nameof(Email), IsUnique = true)]
 public class User
 {
-    public int id { get; set; }
+    public int Id { get; set; }
 
     [Required, MaxLength(256)]
     public string Email { get; set; } = default!;
