@@ -22,7 +22,7 @@ public class TaskItem
     public TaskStatus Status { get; set; } = TaskStatus.Open;
     public DateTime? DueDate { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdateAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 
     public int UserId { get; set; }
     public User User { get; set; } = default!;
