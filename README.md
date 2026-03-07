@@ -238,6 +238,6 @@ MIT License – siehe **LICENSE** / **LICENSE.txt**
 ---
 
 # 👤 Autor
-**Vahid Yamchelou** – Fullstack Developer (.NET + React)
+**Vahid Kosari Yamchelou** – Fullstack Developer (.NET + React)
 
 Wenn dir das Projekt gefällt: ⭐ **Star** setzen!
