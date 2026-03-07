@@ -233,7 +233,7 @@ Ablauf zum Testen:
 ---
 
 # 📄 Lizenz
-MIT License – siehe **LICENSE** / **LICENSE.txt**
+MIT License – siehe **LICENSE.txt**
 
 ---
 
