@@ -23,6 +23,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "taskflow-frontend", "taskfl
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "54019"
+		SlnRelativePath = "taskflow-frontend\"
 	EndProjectSection
 EndProject
 Global
