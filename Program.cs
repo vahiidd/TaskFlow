@@ -6,66 +6,92 @@ using Microsoft.OpenApi.Models;
 using TaskFlowApi.Data;
 using TaskFlowApi.Services;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// SQL Server
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// JWT
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateIssuerSigningKey = true,
-            ValidateLifetime = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
-        };
-    });
-
-builder.Services.AddAuthorization();
-
-// Services
-builder.Services.AddScoped<ITokenService, TokenService>();
-
-builder.Services.AddControllers();
-
-// Swagger with JWT
-builder.Services.AddSwaggerGen(c =>
+namespace TaskFlowApi
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "TaskFlow API", Version = "v1" });
-
-    var jwtScheme = new OpenApiSecurityScheme
+    public class Program
     {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Bearer {token}"
-    };
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
 
-    c.AddSecurityDefinition("Bearer", jwtScheme);
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        { jwtScheme, new string[] {} }
-    });
-});
+            ConfigureServices(builder.Services, builder.Configuration);
 
-var app = builder.Build();
+            var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+            Configure(app);
 
-app.UseAuthentication();
-app.UseAuthorization();
+            app.Run();
+        }
 
-app.MapControllers();
+        private static void ConfigureServices(IServiceCollection services, IConfiguration config)
+        {
+            // SQL Server
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
 
-app.Run();
+            // JWT
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                        ValidIssuer = config["Jwt:Issuer"],
+                        ValidAudience = config["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(config["Jwt:Key"]!))
+                    };
+                });
+
+            services.AddAuthorization();
+
+            // Services
+            services.AddScoped<ITokenService, TokenService>();
+
+            services.AddControllers();
+
+            // Swagger with JWT
+
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TaskFlow API", Version = "v1" });
+
+                var jwtScheme = new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Bearer {token}"
+                };
+
+                c.AddSecurityDefinition("Bearer", jwtScheme);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { jwtScheme, new string[] {} }
+                });
+            });
+        }
+
+        private static void Configure(WebApplication app)
+        {
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.MapControllers();
+        }
+    }
+}
